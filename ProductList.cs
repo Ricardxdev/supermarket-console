@@ -1,5 +1,7 @@
 namespace Supermarket
 {
+    using System.Collections.Generic;
+    using System.Data;
 
     class ProductNode
     {
@@ -39,8 +41,8 @@ namespace Supermarket
     }
     class ProductList
     {
-        private ProductNode? Head;
-        private ProductNode? Tail;
+        public ProductNode? Head { get; private set; }
+        public ProductNode? Tail { get; private set; }
         private int Size = 0;
 
         public Product? Get(string code)
@@ -135,22 +137,55 @@ namespace Supermarket
             }
         }
 
-        public IEnumerable<Product> GetProductsByCategory(string category) // TODO: Check functionality
+        public void ForEach(Action<Product> callback)
         {
             var act = Head;
             while (act != null)
             {
-                if (act.Product.Category == category)
-                {
-                    yield return act.Product;
-                }
+                callback(act.Product);
                 act = act.Next;
             }
         }
 
-        // public string[] GetCategories() {
+        public List<string> GetCategories()
+        {
+            HashSet<string> categories = new HashSet<string>();
+            ForEach((p) => categories.Add(p.Category));
+            
+            return new List<string>(categories);
+        }
 
-        // }
+        public ProductList GetProductsByCategory(ProductList list, string category) // TODO: Check functionality
+        {
+            ForEach(p => {
+                if (p.Category == category)
+                {
+                    list.Add(p);
+                }
+            });
+
+            return list;
+        }
+
+        public DataTable GetDataTable()
+        {
+            return GetDataTable("");
+        }
+        public DataTable GetDataTable(string filterCode)
+        {
+            // Create a DataTable
+            var dataTable = new DataTable();
+            Product.GenerateColumns(dataTable);
+
+            ForEach((p) =>
+            {
+                if (filterCode.Trim() == "" || p.Code.Contains(filterCode))
+                {
+                    p.ToRow(dataTable);
+                }
+            });
+            return dataTable;
+        }
 
         public double GetAverageSalePrice(string category) // TODO: Check functionality
         {
@@ -210,11 +245,10 @@ namespace Supermarket
             var prev = act;
             while (act != null)
             {
-                if (!checkCallback(prev, act)) {
-                    Console.WriteLine($"List is not still sorted: {prev.Product.Code}, {act.Product.Code}");
+                if (!checkCallback(prev, act))
+                {
                     return false;
                 }
-                Console.WriteLine($"List is still sorted: {prev.Product.Code}, {act.Product.Code}");
                 prev = act;
                 act = act.Next;
             }
@@ -247,7 +281,8 @@ namespace Supermarket
 
         public bool CheckIsSortedBySalePriceInDescendingOrder()
         {
-            return CheckIsSorted((prev, act) => {
+            return CheckIsSorted((prev, act) =>
+            {
                 if (prev is null) return true;
                 return prev.Product.SalePrice >= act.Product.SalePrice;
             });
@@ -255,7 +290,8 @@ namespace Supermarket
 
         public void SortBySalePriceInDescendingOrder()
         {
-            Sort((prev, act) => {
+            Sort((prev, act) =>
+            {
                 if (prev is null) return true;
                 return prev.Product.SalePrice >= act.Product.SalePrice;
             });
@@ -264,7 +300,8 @@ namespace Supermarket
 
         public bool CheckIsSortedBySalePriceInIncreasingOrder()
         {
-            return CheckIsSorted((prev, act) => {
+            return CheckIsSorted((prev, act) =>
+            {
                 if (prev is null) return true;
                 return prev.Product.SalePrice <= act.Product.SalePrice;
             });
@@ -272,7 +309,8 @@ namespace Supermarket
 
         public void SortBySalePriceInIncreasingOrder()
         {
-            Sort((prev, act) => {
+            Sort((prev, act) =>
+            {
                 if (prev is null) return true;
                 return prev.Product.SalePrice <= act.Product.SalePrice;
             });
@@ -292,7 +330,6 @@ namespace Supermarket
 
         public void SortByProfitInDescendingOrder()
         {
-            Console.WriteLine("Entry point of SortByProfitInDescendingOrder");
             Sort((prev, act) =>
             {
                 if (prev is null) return true;

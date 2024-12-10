@@ -1,3 +1,5 @@
+using System.Data;
+
 namespace Supermarket
 {
     class Product
@@ -18,6 +20,21 @@ namespace Supermarket
             BuyPrice = buyPrice;
             SalePrice = salePrice;
         }
+
+        public static void GenerateColumns(DataTable dataTable)
+        {
+            dataTable.Columns.Add("Codigo", typeof(string));
+            dataTable.Columns.Add("Nombre", typeof(string));
+            dataTable.Columns.Add("Description", typeof(string));
+            dataTable.Columns.Add("Category", typeof(string));
+            dataTable.Columns.Add("Costo", typeof(double));
+            dataTable.Columns.Add("PVP", typeof(double));
+        }
+        public void ToRow(DataTable dataTable) 
+        {
+            dataTable.Rows.Add(Code, Name, Description, Category, BuyPrice, SalePrice);
+        }
+
         public static bool operator ==(Product? a, Product? b)
         {
             if (ReferenceEquals(a, b)) return true;

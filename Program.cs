@@ -1,38 +1,20 @@
 ﻿namespace Supermarket
 {
+    using System;
+    using System.Data;
     using Terminal.Gui;
     class Program
     {
         static void Main(string[] args)
         {
             Console.Clear();
-            Console.WriteLine("--------- Products of .dat file ---------");
             var products = new ProductList();
             PreloadProducts(products);
-            Console.WriteLine("------- Products of Linked List --------");
-            products.ShowAll();
-
-            Console.WriteLine("--------------------------------------------------------------------------");
-            products.SortByProfitInDescendingOrder();
-            products.ShowAll();
-
-            Console.WriteLine("--------------------------------------------------------------------------");
-            products.SortByProfitInIncreasingOrder();
-            products.ShowAll();
-
-            Console.WriteLine("--------------------------------------------------------------------------");
-            products.SortBySalePriceInDescendingOrder();
-            products.ShowAll();
-
-            Console.WriteLine("--------------------------------------------------------------------------");
-            products.SortBySalePriceInIncreasingOrder();
-            products.ShowAll();
-
-            // Console.WriteLine("--------- Clients of .dat file ---------");
-            // var clients = new ClientList();
-            // PreloadClients(clients);
-            // Console.WriteLine("------- Clients of Linked List --------");
-            // clients.ShowAll();
+            
+            var clients = new ClientList();
+            PreloadClients(clients);
+        
+            var ui = new SupermarketUI(products, clients);
 
             //Console.WriteLine("------------------  Create Product  ---------------------------");
             //var product1 = new Product("AAA1111", "Torta", "es una torta bro", "postre", 10.34, 100);
@@ -140,11 +122,15 @@
             // Console.Out.Flush();
         }
 
-        public static void PreloadProducts(ProductList products) {
-            foreach (string rawProduct in File.ReadLines("productos.dat"))
+        public static void PreloadProducts(ProductList products)
+        {
+            string productsPath = "./productos.dat";
+            if (!File.Exists(productsPath)) return;
+            foreach (string rawProduct in File.ReadLines(productsPath))
             {
                 string[] items = rawProduct.Split(',');
-                if (items.Length == 6) {
+                if (items.Length == 6)
+                {
                     var product = new Product(
                         items[0].Trim(),
                         items[1].Trim(),
@@ -160,13 +146,17 @@
             }
         }
 
-        public static void PreloadClients(ClientList clients) {
-            foreach (string rawClient in File.ReadLines("clientes.dat"))
+        public static void PreloadClients(ClientList clients)
+        {
+            string clientsPath = "./clientes.dat";
+            if (!File.Exists(clientsPath)) return;
+            foreach (string rawClient in File.ReadLines(clientsPath))
             {
                 string[] items = rawClient.Split(',');
-                if (items.Length == 6) {
+                if (items.Length == 6)
+                {
                     var client = new Client(
-                        Int32.Parse(items[0]),
+                        items[0].Trim(),
                         items[1].Trim(),
                         items[2].Trim(),
                         items[3].Trim(),
