@@ -22,6 +22,11 @@ namespace Supermarket
 
         }
 
+        public double Buy(double amount)
+        {
+            TotalBilled += amount;
+            return TotalBilled;
+        }
         public static void GenerateColumns(DataTable dataTable)
         {
             dataTable.Columns.Add("Cedula", typeof(string));

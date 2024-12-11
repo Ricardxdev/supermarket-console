@@ -30,9 +30,16 @@ namespace Supermarket
             dataTable.Columns.Add("Costo", typeof(double));
             dataTable.Columns.Add("PVP", typeof(double));
         }
-        public void ToRow(DataTable dataTable) 
+        public void ToRow(DataTable dataTable)
         {
-            dataTable.Rows.Add(Code, Name, Description, Category, BuyPrice, SalePrice);
+            if (dataTable.Columns.Count == 6)
+            {
+                dataTable.Rows.Add(Code, Name, Description, Category, BuyPrice, SalePrice);
+            }
+            else if (dataTable.Columns.Count == 7)
+            {
+                dataTable.Rows.Add(Code, Name, Description, Category, BuyPrice, SalePrice, " -> Comprar <-");
+            }
         }
 
         public static bool operator ==(Product? a, Product? b)

@@ -142,7 +142,6 @@
 
                     products.Add(product);
                 }
-                Console.WriteLine(rawProduct);
             }
         }
 
@@ -166,7 +165,6 @@
 
                     clients.Add(client);
                 }
-                Console.WriteLine(rawClient);
             }
         }
     }

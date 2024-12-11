@@ -151,13 +151,14 @@ namespace Supermarket
         {
             HashSet<string> categories = new HashSet<string>();
             ForEach((p) => categories.Add(p.Category));
-            
+
             return new List<string>(categories);
         }
 
         public ProductList GetProductsByCategory(ProductList list, string category) // TODO: Check functionality
         {
-            ForEach(p => {
+            ForEach(p =>
+            {
                 if (p.Category == category)
                 {
                     list.Add(p);
@@ -167,40 +168,46 @@ namespace Supermarket
             return list;
         }
 
-        public DataTable GetDataTable()
+        public DataTable GenerateDataTable()
         {
-            return GetDataTable("");
-        }
-        public DataTable GetDataTable(string filterCode)
-        {
-            // Create a DataTable
             var dataTable = new DataTable();
             Product.GenerateColumns(dataTable);
+            return dataTable;
+        }
+        public DataTable FillDataTable(DataTable dataTable)
+        {
+            return FillDataTable(dataTable, "");
+        }
 
+        public DataTable FillDataTable(DataTable dataTable, string filterCode)
+        {
+            return FillDataTable(dataTable, filterCode, ""); ;
+        }
+        public DataTable FillDataTable(DataTable dataTable, string filterCode, string filterCategory)
+        {
+            var trinnedCode = filterCode.Trim();
+            var trinnedCategory = filterCategory.Trim();
             ForEach((p) =>
             {
-                if (filterCode.Trim() == "" || p.Code.Contains(filterCode))
-                {
-                    p.ToRow(dataTable);
-                }
+                if (!(trinnedCode == "" || p.Code.Contains(trinnedCode))) return;
+                if (!(trinnedCategory == "" || trinnedCategory == "Ninguna" || p.Category.Contains(trinnedCategory))) return;
+                p.ToRow(dataTable);
             });
             return dataTable;
         }
 
-        public double GetAverageSalePrice(string category) // TODO: Check functionality
+        public double GetAverageSalePrice(string category)
         {
             double total = 0;
             int count = 0;
-            var act = Head;
-            while (act != null)
+            ForEach((p) =>
             {
-                if (act.Product.Category == category)
+                if (p.Category == category)
                 {
-                    total += act.Product.SalePrice;
+                    total += p.SalePrice;
                     count++;
                 }
-                act = act.Next;
-            }
+            });
 
             return total / count;
         }

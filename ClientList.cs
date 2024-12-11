@@ -204,7 +204,7 @@ namespace Supermarket
         public DataTable GetDataTable(string filterLicense)
         {
             var dataTable = new DataTable();
-            Product.GenerateColumns(dataTable);
+            Client.GenerateColumns(dataTable);
 
             ForEach((p) =>
             {
